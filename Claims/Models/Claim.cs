@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace Claims.Models
 {
@@ -20,6 +21,7 @@ namespace Claims.Models
         public ClaimType Type { get; set; }
 
         [JsonProperty(PropertyName = "damageCost")]
+        [Range(0, 100000)]
         public decimal DamageCost { get; set; }
     }
 

@@ -1,6 +1,7 @@
 using Claims.Models;
 using Claims.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Claims.Controllers
 {
@@ -27,6 +28,11 @@ namespace Claims.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAsync(Claim claim)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await _service.CreateClaim(claim);
             return Ok(claim);
         }
