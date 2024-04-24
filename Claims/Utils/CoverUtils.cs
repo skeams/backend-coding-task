@@ -14,6 +14,7 @@ namespace Claims.Utils
                 _ => 1.3m
             };
 
+            var baseRate = 1250;
             var insuranceLength = endDate.DayNumber - startDate.DayNumber;
             var totalPremium = 0m;
 
@@ -23,31 +24,17 @@ namespace Claims.Utils
 
                 switch (i)
                 {
-                    case < 30: // No discount for the first 30 days
+                    case < 30:
                         break;
-                    case < 180: // Some discount the next 150 days
-                    {
-                        discountMultiplier = 0.02m;
-                        if (coverType == CoverType.Yacht)
-                        {
-                            discountMultiplier = 0.05m;
-                        }
-
+                    case < 180:
+                        discountMultiplier = coverType == CoverType.Yacht ? 0.05m : 0.02m;
                         break;
-                    }
-                    default: // Max discount achieved after 180 days
-                        {
-                        discountMultiplier = 0.03m;
-                        if (coverType == CoverType.Yacht)
-                        {
-                            discountMultiplier = 0.08m;
-                        }
-
+                    default:
+                        discountMultiplier = coverType == CoverType.Yacht ? 0.08m : 0.03m;
                         break;
-                    }
                 }
 
-                totalPremium += 1250 * (premiumMultiplier - discountMultiplier);
+                totalPremium += baseRate * (premiumMultiplier - discountMultiplier);
             }
 
             return totalPremium;
