@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Claims
 {
@@ -22,7 +21,6 @@ namespace Claims
 
         [JsonProperty(PropertyName = "damageCost")]
         public decimal DamageCost { get; set; }
-
     }
 
     public enum ClaimType
