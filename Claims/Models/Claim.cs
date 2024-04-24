@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 
-namespace Claims
+namespace Claims.Models
 {
     public class Claim
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
-        
+
         [JsonProperty(PropertyName = "coverId")]
         public string CoverId { get; set; }
 

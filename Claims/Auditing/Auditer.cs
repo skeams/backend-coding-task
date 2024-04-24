@@ -11,7 +11,7 @@
 
         public void AuditClaim(string id, string httpRequestType)
         {
-            var claimAudit = new ClaimAudit()
+            var claimAudit = new ClaimAudit
             {
                 Created = DateTime.Now,
                 HttpRequestType = httpRequestType,
@@ -24,7 +24,7 @@
         
         public void AuditCover(string id, string httpRequestType)
         {
-            var coverAudit = new CoverAudit()
+            var coverAudit = new CoverAudit
             {
                 Created = DateTime.Now,
                 HttpRequestType = httpRequestType,
