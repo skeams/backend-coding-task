@@ -1,5 +1,6 @@
 using Claims.Models;
 using Claims.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 
@@ -10,12 +11,14 @@ namespace Claims.Controllers;
 public class CoversController : ControllerBase
 {
     private readonly ILogger<CoversController> _logger;
+    private readonly IValidator<Cover> _validator;
     private readonly CoversService _service;
 
-    public CoversController(ILogger<CoversController> logger, CoversService service)
+    public CoversController(ILogger<CoversController> logger, CoversService service, IValidator<Cover> validator)
     {
         _logger = logger;
         _service = service;
+        _validator = validator;
     }
     
     [HttpPost("compute-premium")]
@@ -49,6 +52,12 @@ public class CoversController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> CreateAsync(Cover cover)
     {
+        var validationResult = await _validator.ValidateAsync(cover);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.ToString());
+        }
+
         var computedCover = await _service.CreateCover(cover);
         return Ok(computedCover);
     }

@@ -33,6 +33,12 @@ namespace Claims.Controllers
                 return BadRequest(ModelState);
             }
 
+            /*
+             * TODO: Om tid, legg til validering av dato opp mot cover-id:
+             *
+             * Created date must be within the period of the related Cover
+             */
+
             await _service.CreateClaim(claim);
             return Ok(claim);
         }
