@@ -20,7 +20,7 @@ public class CoversController : ControllerBase
                      ?? throw new ArgumentNullException(nameof(cosmosClient));
     }
     
-    [HttpPost]
+    [HttpPost("compute-premium")]
     public async Task<ActionResult> ComputePremiumAsync(DateOnly startDate, DateOnly endDate, CoverType coverType)
     {
         return Ok(ComputePremium(startDate, endDate, coverType));
