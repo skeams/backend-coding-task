@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Claims.Models;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Claims.Tests
@@ -8,17 +10,24 @@ namespace Claims.Tests
         [Fact]
         public async Task Get_Claims()
         {
-            var application = new WebApplicationFactory<Program>()
-                .WithWebHostBuilder(_ =>
-                {});
-
+            var application = new WebApplicationFactory<Program>().WithWebHostBuilder(_ => {});
             var client = application.CreateClient();
 
             var response = await client.GetAsync("/Claims");
 
             response.EnsureSuccessStatusCode();
 
-            //TODO: Apart from ensuring 200 OK being returned, what else can be asserted?
+            var result = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                var claims = JsonConvert.DeserializeObject<IEnumerable<Claim>>(result);
+                Assert.NotNull(claims);
+            }
+            catch
+            {
+                Assert.Fail("Should not fail deserialization");
+            }
         }
 
     }

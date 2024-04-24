@@ -15,7 +15,7 @@ namespace Claims.Utils
          *
          * Premium will accumulate as described above for the first 30 days.
          * Then for the next 150, a 2% discount is applied. (or 5% in case of Yacht)
-         * After day 180 the discount is increased to 3% (8% for Yatch)
+         * After day 180 the discount is increased to 3% (8% for Yacht)
          */
         public static decimal ComputePremium(DateOnly startDate, DateOnly endDate, CoverType coverType)
         {
