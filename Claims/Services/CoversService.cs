@@ -36,6 +36,13 @@ public class CoversService
         cover.Id = Guid.NewGuid().ToString();
         cover.Premium = CoverUtils.ComputePremium(cover.StartDate, cover.EndDate, cover.Type);
 
+        // TODO: In-memory queue
+        //
+        // Mother-guide: https://www.kevinlloyd.net/in-memory-queue-with-mediatr/
+        // MS Channels: https://devblogs.microsoft.com/dotnet/an-introduction-to-system-threading-channels/
+        // MS BackgroundService: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-7.0&tabs=visual-studio#backgroundservice-base-class
+        // MS QueueService: https://learn.microsoft.com/en-us/dotnet/core/extensions/queue-service#create-queuing-services
+
         _auditer.AuditCover(cover.Id, "POST");
         await _proxy.CreateCover(cover);
 
