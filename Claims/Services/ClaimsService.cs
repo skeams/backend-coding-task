@@ -1,18 +1,18 @@
-﻿using Claims.Auditing;
-using Claims.Models;
+﻿using Claims.Models;
 using Claims.Proxy;
+using Claims.Queue;
 
 namespace Claims.Services
 {
     public class ClaimsService
     {
         private readonly ClaimsProxy _proxy;
-        private readonly Auditer _auditer;
+        private readonly AuditingQueue _queue;
 
-        public ClaimsService(ClaimsProxy proxy, AuditContext auditContext)
+        public ClaimsService(ClaimsProxy proxy, AuditingQueue queue)
         {
             _proxy = proxy;
-            _auditer = new Auditer(auditContext);
+            _queue = queue;
         }
 
         public async Task<IEnumerable<Claim>> GetClaims()
@@ -23,13 +23,23 @@ namespace Claims.Services
         public async Task CreateClaim(Claim claim)
         {
             claim.Id = Guid.NewGuid().ToString();
-            _auditer.AuditClaim(claim.Id, "POST");
+            _queue.AddAuditAction(new QueueItem
+            {
+                Action = "POST",
+                Id = claim.Id,
+                IsClaim = true
+            });
             await _proxy.AddItemAsync(claim);
         }
 
         public async Task DeleteClaim(string id)
         {
-            _auditer.AuditClaim(id, "DELETE");
+            _queue.AddAuditAction(new QueueItem
+            {
+                Action = "DELETE",
+                Id = id,
+                IsClaim = true
+            });
             await _proxy.DeleteItemAsync(id);
         }
 

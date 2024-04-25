@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Claims.Auditing;
 using Claims.Models;
 using Claims.Proxy;
+using Claims.Queue;
 using Claims.Services;
 using Claims.Validators;
 using FluentValidation;
@@ -19,6 +20,9 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddTransient<ClaimsService>();
 builder.Services.AddTransient<CoversService>();
 builder.Services.AddScoped<IValidator<Cover>, CoverValidator>();
+
+builder.Services.AddHostedService<QueueHostedService>();
+builder.Services.AddSingleton<AuditingQueue>();
 
 builder.Services.AddSingleton(
     InitializeCosmosClientInstanceForCoversAsync(builder.Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());

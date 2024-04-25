@@ -1,6 +1,6 @@
-﻿using Claims.Auditing;
-using Claims.Models;
+﻿using Claims.Models;
 using Claims.Proxy;
+using Claims.Queue;
 using Claims.Utils;
 
 namespace Claims.Services;
@@ -8,12 +8,12 @@ namespace Claims.Services;
 public class CoversService
 {
     private readonly CoversProxy _proxy;
-    private readonly Auditer _auditer;
+    private readonly AuditingQueue _queue;
 
-    public CoversService(CoversProxy proxy, AuditContext auditContext)
+    public CoversService(CoversProxy proxy, AuditingQueue queue)
     {
         _proxy = proxy;
-        _auditer = new Auditer(auditContext);
+        _queue = queue;
     }
 
     public decimal ComputePremium(DateOnly startDate, DateOnly endDate, CoverType coverType)
@@ -36,14 +36,12 @@ public class CoversService
         cover.Id = Guid.NewGuid().ToString();
         cover.Premium = CoverUtils.ComputePremium(cover.StartDate, cover.EndDate, cover.Type);
 
-        // TODO: In-memory queue
-        //
-        // Mother-guide: https://www.kevinlloyd.net/in-memory-queue-with-mediatr/
-        // MS Channels: https://devblogs.microsoft.com/dotnet/an-introduction-to-system-threading-channels/
-        // MS BackgroundService: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-7.0&tabs=visual-studio#backgroundservice-base-class
-        // MS QueueService: https://learn.microsoft.com/en-us/dotnet/core/extensions/queue-service#create-queuing-services
-
-        _auditer.AuditCover(cover.Id, "POST");
+        _queue.AddAuditAction(new QueueItem
+        {
+            Action = "POST",
+            Id = cover.Id,
+            IsClaim = false
+        });
         await _proxy.CreateCover(cover);
 
         return cover;
@@ -51,7 +49,12 @@ public class CoversService
 
     public async Task DeleteCover(string id)
     {
-        _auditer.AuditCover(id, "DELETE");
+        _queue.AddAuditAction(new QueueItem
+        {
+            Action = "DELETE",
+            Id = id,
+            IsClaim = false
+        });
         await _proxy.DeleteCover(id);
     }
 }
