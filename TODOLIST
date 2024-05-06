@@ -1,0 +1,17 @@
+* IoC: Cleanup and refactor of service-builder. Extract logic to separate file(s)
+
+* Claims Validation: Implement validation for created-date within cover-period
+
+* Auditing + Queue:
+ - Consider moving QueueService and queue to separate project
+ - Move models and Auditer-"proxy" to its relevant folders/project
+ - Expose audit-endpoint to fetch all audits (could be scoped to admin-only)
+ - Verify/update queue-service-logic to make sure it works as intended
+
+* Tests (more tests)
+ - Add integration-tests (explicit "unit" tests on proxy-methods)
+ - Service-tests (checking that auditing is performed, and any exception handling)
+ - Controller-tests (i.e verifying exception-handling and validation responses)
+ - Cleanup of ClaimsControllerTests.cs (it is currently wrong, should not fail if serealization fails within the test itselfs)
+
+* Permium-calculation: Utils-method can be refactored for even greater readabilitys
